@@ -1,0 +1,59 @@
+action: https://docs.google.com/forms/d/e/1FAIpQLSdhq6eKn19c9dpHnCFbUAT1pWsq-erAfw2qPTXgkoQ3qc8vrg/formResponse
+description: 'Event Timing: January 4th-6th, 2016Event Address: 123 Your Street Your City, ST 12345Contact us at (123) 456-7890 or no_reply@example.com'
+items:
+- description: ''
+  fields:
+  - field_type: TEXT
+    name: entry.2092238618
+    placeholder: Your answer
+  label: Name *
+  required: true
+- description: ''
+  fields:
+  - field_type: TEXT
+    name: entry.1556369182
+    placeholder: Your answer
+  label: Email *
+  required: true
+- description: ''
+  fields:
+  - field_type: TEXT
+    name: entry.479301265
+    placeholder: Your answer
+  label: Organization *
+  required: true
+- description: ''
+  fields:
+  - field_type: CHECKBOX
+    name: entry.1753222212
+    value: Day 1
+  - field_type: CHECKBOX
+    name: entry.1753222212
+    value: Day 2
+  - field_type: CHECKBOX
+    name: entry.1753222212
+    value: Day 3
+  label: What days will you attend? *
+  required: true
+- description: ''
+  fields:
+  - field_type: RADIO
+    value: None
+  - field_type: RADIO
+    value: Vegetarian
+  - field_type: RADIO
+    value: Vegan
+  - field_type: RADIO
+    value: Kosher
+  - field_type: RADIO
+    value: Gluten-free
+  label: Dietary restrictions *
+  required: true
+- description: ''
+  fields:
+  - field_type: CHECKBOX
+    name: entry.2109138769
+    value: 'Yes'
+  label: I understand that I will have to pay $$ upon arrival *
+  required: true
+title: Grow Test Registration Form

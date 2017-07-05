@@ -1,0 +1,9 @@
+extensions:
+  preprocessors:
+  - extensions.google_forms.GoogleFormsPreprocessor
+
+preprocessors:
+- kind: google_forms
+  path: /content/partials/form.yaml
+  id: 1FAIpQLSdhq6eKn19c9dpHnCFbUAT1pWsq-erAfw2qPTXgkoQ3qc8vrg
+  autorun: true
