@@ -1,14 +1,28 @@
+from boltons import iterutils
 from googleapiclient import http
 from grow.preprocessors import google_drive
 from protorpc import messages
 from protorpc import protojson
+import bs4
 import grow
 import io
 import json
-import urllib
 import os
-import bs4
 import requests
+import urllib
+
+
+TRANSLATABLE_KEYS = (
+    'description',
+    'label',
+    'placeholder',
+    'title',
+    'value',
+)
+
+
+class Error(Exception):
+    pass
 
 
 class FieldType(messages.Enum):
@@ -48,19 +62,35 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
     class Config(messages.Message):
         id = messages.StringField(1)
         path = messages.StringField(2)
+	translate = messages.BooleanField(3, default=True)
 
     def run(self, *args, **kwargs):
         url = GoogleFormsPreprocessor.VIEW_URL.format(self.config.id)
         resp = requests.get(url)
-        assert resp.status_code == 200
+	if resp.status_code != 200:
+            raise Error('Error requesting -> {}'.format(url))
         html = resp.text
         soup = bs4.BeautifulSoup(html, 'html.parser')
         soup_content = soup.find('div', {'class': 'freebirdFormviewerViewFormContent'})
         form_msg = self.parse_form(soup_content)
         msg_string_content = protojson.encode_message(form_msg)
         json_dict = json.loads(msg_string_content)
+	if self.config.translate:
+            json_dict = self.tag_keys_for_translation(json_dict)
         self.pod.write_yaml(self.config.path, json_dict)
         self.pod.logger.info('Saved -> {}'.format(self.config.path))
+
+    def tag_keys_for_translation(self, data):
+        def visit(path, key, value):
+            if not isinstance(key, basestring) or not value:
+                return key, value
+            key = '{}@'.format(key) if key in TRANSLATABLE_KEYS else key
+            return key, value
+        return iterutils.remap(data, visit=visit)
+
+    def get_html(self, soup, class_name):
+        el = soup.find('div', {'class': class_name})
+        return el.encode_contents() if el else None
 
     def get_text(self, soup, class_name):
         el = soup.find('div', {'class': class_name})
@@ -81,15 +111,18 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
     def parse_form(self, soup):
         msg = Form()
         msg.title = self.get_text(soup, 'freebirdFormviewerViewHeaderTitle')
-        msg.description = self.get_text(soup, 'freebirdFormviewerViewHeaderDescription')
+        msg.description = self.get_html(soup, 'freebirdFormviewerViewHeaderDescription')
         msg.action = GoogleFormsPreprocessor.ACTION_URL.format(self.config.id)
         msg.items = []
         items = soup.findAll('div', {'class': 'freebirdFormviewerViewItemsItemItem'})
         for item in items:
             item_msg = Item()
-            item_msg.label = self.get_text(item, 'freebirdFormviewerViewItemsItemItemTitle')
-            item_msg.description = self.get_description(item)
             item_msg.required = bool(item.find('span', {'class': 'freebirdFormviewerViewItemsItemRequiredAsterisk'}))
+            item_msg.label = self.get_text(item, 'freebirdFormviewerViewItemsItemItemTitle')
+            # Strip * from label if required.
+            if item_msg.required and item_msg.label.endswith(' *'):
+                item_msg.label = item_msg.label[:-2]
+            item_msg.description = self.get_description(item)
             item_msg.fields = []
             checkboxes = item.findAll('div', {'class': 'freebirdFormviewerViewItemsCheckboxChoice'})
             for checkbox in checkboxes:
