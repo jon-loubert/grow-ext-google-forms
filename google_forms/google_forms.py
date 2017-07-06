@@ -20,6 +20,9 @@ TRANSLATABLE_KEYS = (
     'value',
 )
 
+SIGN_IN_PAGE_SENTINEL = \
+    '<title>Google Forms - create and analyze surveys, for free.</title>'
+
 
 class Error(Exception):
     pass
@@ -70,6 +73,10 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
 	if resp.status_code != 200:
             raise Error('Error requesting -> {}'.format(url))
         html = resp.text
+        if SIGN_IN_PAGE_SENTINEL in html:
+            raise Error(
+                'Error requesting -> {} -> Are you sure the form is publicly'
+                ' viewable?'.format(url))
         soup = bs4.BeautifulSoup(html, 'html.parser')
         soup_content = soup.find('div', {'class': 'freebirdFormviewerViewFormContent'})
         form_msg = self.parse_form(soup_content)
