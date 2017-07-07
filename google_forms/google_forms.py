@@ -77,7 +77,8 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
             raise Error(
                 'Error requesting -> {} -> Are you sure the form is publicly'
                 ' viewable?'.format(url))
-        soup = bs4.BeautifulSoup(html, 'html.parser')
+        with grow.FrozenImportFixer():
+            soup = bs4.BeautifulSoup(html, 'html.parser')
         soup_content = soup.find('div', {'class': 'freebirdFormviewerViewFormContent'})
         form_msg = self.parse_form(soup_content)
         msg_string_content = protojson.encode_message(form_msg)
