@@ -98,7 +98,9 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
 
     def get_html(self, soup, class_name):
         el = soup.find('div', {'class': class_name})
-        return el.encode_contents() if el else None
+        if not el:
+            return
+        return ''.join([unicode(part) for part in el.contents])
 
     def get_text(self, soup, class_name):
         el = soup.find('div', {'class': class_name})
