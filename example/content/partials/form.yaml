@@ -56,4 +56,11 @@ items:
     value@: 'Yes'
   label@: I understand that I will have to pay $$ upon arrival
   required: true
+- description: ''
+  fields:
+  - field_type: TEXTAREA
+    name: entry.819238811
+    placeholder@: Your answer
+  label@: Write a short bio about yourself
+  required: false
 title@: Grow Test Registration Form

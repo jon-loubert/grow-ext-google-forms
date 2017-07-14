@@ -1,9 +1,9 @@
 from boltons import iterutils
 from googleapiclient import http
+from grow.common.utils import bs4
 from grow.preprocessors import google_drive
 from protorpc import messages
 from protorpc import protojson
-import bs4
 import grow
 import io
 import json
@@ -77,8 +77,7 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
             raise Error(
                 'Error requesting -> {} -> Are you sure the form is publicly'
                 ' viewable?'.format(url))
-        with grow.FrozenImportFixer():
-            soup = bs4.BeautifulSoup(html, 'html.parser')
+        soup = bs4.BeautifulSoup(html, 'html.parser')
         soup_content = soup.find('div', {'class': 'freebirdFormviewerViewFormContent'})
         form_msg = self.parse_form(soup_content)
         msg_string_content = protojson.encode_message(form_msg)
@@ -106,8 +105,9 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
         el = soup.find('div', {'class': class_name})
         return el.text if el else None
 
-    def get_placeholder(self, soup):
-        el = soup.find('div', {'class': 'quantumWizTextinputPaperinputPlaceholder'})
+    def get_placeholder(
+            self, soup, class_name='quantumWizTextinputPaperinputPlaceholder'):
+        el = soup.find('div', {'class': class_name})
         return el.text if el else None
 
     def get_description(self, soup):
@@ -162,7 +162,7 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
             for text in textareas:
                 field_msg = Field()
                 field_msg.field_type = FieldType.TEXTAREA
-                field_msg.placeholder = self.get_placeholder(text)
+                field_msg.placeholder = self.get_placeholder(text, class_name='quantumWizTextinputPapertextareaPlaceholder')
                 field_msg.name = text.find('textarea').get('name')
                 item_msg.fields.append(field_msg)
             texts = item.findAll('div', {'class': 'freebirdFormviewerViewItemsTextItemWrapper'})
