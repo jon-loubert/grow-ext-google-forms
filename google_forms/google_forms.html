@@ -1,0 +1,83 @@
+{% macro checkbox_field(item, field, is_last) %}
+  <div class="form__field__input form__field__input--checkbox">
+    <label>
+      <input
+        {{"required" if item.required}}
+        type="{{field.field_type|lower}}"
+        name="{{field.name}}"
+        value="{{field.value}}">
+      <div class="form__field__checkbox">
+        {{_(field.value)}}
+        {% if not item.label and item.required %}
+        <span class="required">*</span>
+        {% endif %}
+      </div>
+    </label>
+  </div>
+{% endmacro %}
+
+{% macro country_select(item, field) %}
+  <select
+      class="form__field__control"
+      {% if item.required %}required{% endif %}
+      name="{{field.name}}">
+    <option value="">{{_(item.description)}}</option>
+    {% set countries = g.csv('/content/countries.csv') %}
+    {% for country in countries %}
+    <option value="{{country['ISO3166-1-Alpha-2']}}">{{country.name}}</option>
+    {% endfor %}
+  </select>
+{% endmacro %}
+
+{% macro select_field(item, field) %}
+<div class="form__field">
+  {{_label(item, field)}}
+  <select
+    {{"required" if item.required}}
+    class="form__field__control"
+    name="{{field.name}}">
+    <option value="">{{_(item.description)}}</option>
+  </select>
+</div>
+{% endmacro %}
+
+{% macro text_field(item, field) %}
+  <div class="form__field">
+    {{_label(item, field)}}
+    <div class="form__field__input">
+      {% if item.label == "Country" %}
+        {{country_select(item, field)}}
+      {% else %}
+        <input
+          type="{{"email" if "email" in item.label.lower() else field.field_type|lower}}"
+          {{"required" if item.required}}
+          name="{{field.name}}"
+          class="form__field__control">
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro textarea_field(item, field) %}
+  <div class="form__field">
+    {{_label(item, field)}}
+    {% endif %}
+    <div class="form__field__input">
+      <textarea
+        {{"required" if item.required}}
+        name="{{field.name}}"
+        class="form__field__control"></textarea>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro _label(item, field) %}
+  {% if item.label %}
+  <label class="form__field__label">
+    {{_(item.label)}}
+    {% if item.required %}
+    <span class="required">*</span>
+    {% endif %}
+  </label>
+  {% endif %}
+{% endmacro %}
