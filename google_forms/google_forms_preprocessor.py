@@ -59,8 +59,8 @@ class Form(messages.Message):
 
 class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
     KIND = 'google_forms'
-    VIEW_URL = 'https://docs.google.com/forms/d/e/{}/viewform'
-    ACTION_URL = 'https://docs.google.com/forms/d/e/{}/formResponse'
+    VIEW_URL = 'https://docs.google.com/forms/d/e/{}/viewform?hl=en'
+    ACTION_URL = 'https://docs.google.com/forms/d/e/{}/formResponse?hl=en'
 
     class Config(messages.Message):
         id = messages.StringField(1)
@@ -154,7 +154,10 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
             for radio in radios:
                 field_msg = Field()
                 field_msg.field_type = FieldType.RADIO
-                field_msg.name = radio.parent.parent.parent.parent.find('input').get('name')
+                # Use findAll[-1] to retrieve the last input, which is the
+                # actual one. TODO: Add support for other option response with
+                # element name="entry.588393791.other_option_response".
+                field_msg.name = radio.parent.parent.parent.parent.findAll('input')[-1].get('name')
                 value = self.get_choice_value(radio)
                 field_msg.value = value
                 item_msg.fields.append(field_msg)

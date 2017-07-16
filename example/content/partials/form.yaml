@@ -1,4 +1,4 @@
-action: https://docs.google.com/forms/d/e/1FAIpQLSdhq6eKn19c9dpHnCFbUAT1pWsq-erAfw2qPTXgkoQ3qc8vrg/formResponse
+action: https://docs.google.com/forms/d/e/1FAIpQLSdhq6eKn19c9dpHnCFbUAT1pWsq-erAfw2qPTXgkoQ3qc8vrg/formResponse?hl=en
 description@: 'Event Timing: January 4th-6th, 2016<br/>Event Address: 123 Your Street Your City, ST 12345<br/>Contact us at (123) 456-7890 or <a href="mailto:no_reply@example.com">no_reply@example.com</a>'
 items:
 - description: ''
@@ -38,14 +38,19 @@ items:
 - description: ''
   fields:
   - field_type: RADIO
+    name: entry.588393791
     value@: None
   - field_type: RADIO
+    name: entry.588393791
     value@: Vegetarian
   - field_type: RADIO
+    name: entry.588393791
     value@: Vegan
   - field_type: RADIO
+    name: entry.588393791
     value@: Kosher
   - field_type: RADIO
+    name: entry.588393791
     value@: Gluten-free
   label@: Dietary restrictions
   required: true
@@ -62,5 +67,12 @@ items:
     name: entry.819238811
     placeholder@: Your answer
   label@: Write a short bio about yourself
+  required: false
+- description: ''
+  fields:
+  - field_type: TEXT
+    name: entry.2106524609
+    placeholder@: Your answer
+  label@: Country
   required: false
 title@: Grow Test Registration Form

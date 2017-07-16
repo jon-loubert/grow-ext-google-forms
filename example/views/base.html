@@ -1,3 +1,17 @@
 <!doctype html>
 <meta charset="utf-8">
 <title></title>
+{% import "/extensions/google_forms/google_forms.html"
+    as google_forms with context %}
+<form action="{{doc.form.action}}" class="form">
+  <div class="form__title">
+    {{doc.form.fields.get('title')}}
+  </div>
+  <div class="form__description">
+    {{doc.form.description|safe}}
+  </div>
+  {{google_forms.render_fields(doc.form.items)}}
+  <div class="form__submit">
+    <button type="submit">Submit</button>
+  </div>
+</form>

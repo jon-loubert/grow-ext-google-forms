@@ -1,3 +1,6 @@
+localization:
+  default_locale: en
+
 extensions:
   preprocessors:
   - extensions.google_forms.GoogleFormsPreprocessor

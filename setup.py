@@ -3,15 +3,14 @@ from setuptools import setup
 
 setup(
     name='grow-ext-google-forms',
-    version='1.0.2',
-    zip_safe=False,
+    version='1.0.3',
     license='MIT',
     author='Grow SDK Authors',
     author_email='hello@grow.io',
-    include_package_data=False,
+    package_data={
+        'google_forms': ['*.html'],
+    },
     packages=[
         'google_forms',
-    ],
-    install_requires=[
     ],
 )
