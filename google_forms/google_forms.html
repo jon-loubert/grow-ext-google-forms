@@ -1,6 +1,6 @@
 {% macro checkbox_or_radio_field_group(item, field, loop) %}
   {% if item.label and loop.first %}
-    <div class="form__group">
+  <div class="form__group" data-label="{{item.label|slug}}" data-name="{{field.name}}">
       <label class="form__group__label">{{_(item.label)}}
         {% if item.required %}
         <span class="required">*</span>
@@ -65,7 +65,7 @@
 {% endmacro %}
 
 {% macro select_field(item, field) %}
-  <div class="form__field">
+  <div class="form__field" data-name="{{field.name}}">
     {{_label(item, field)}}
     <select
       {{"required" if item.required}}
@@ -77,7 +77,7 @@
 {% endmacro %}
 
 {% macro text_field(item, field) %}
-  <div class="form__field">
+  <div class="form__field" data-name="{{field.name}}">
     {{_label(item, field)}}
     <div class="form__field__input">
       {% if item.label == "Country" %}
@@ -94,7 +94,7 @@
 {% endmacro %}
 
 {% macro textarea_field(item, field) %}
-  <div class="form__field">
+  <div class="form__field" data-name="{{field.name}}">
     {{_label(item, field)}}
     <div class="form__field__input">
       <textarea
