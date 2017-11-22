@@ -34,6 +34,11 @@
       </div>
     </label>
   </div>
+  {% if item.description %}
+    <div class="form__field form__field--description">
+      {{_(item.description)}}
+    </div>
+  {% endif %}
 {% endmacro %}
 
 {% macro country_select(item, field) %}
@@ -62,6 +67,11 @@
       </option>
     {% endfor %}
   </select>
+  {% if item.description %}
+    <div class="form__field form__field--description">
+      {{_(item.description)}}
+    </div>
+  {% endif %}
 {% endmacro %}
 
 {% macro select_field(item, field) %}
@@ -74,6 +84,11 @@
       <option value="">{{_(item.description)}}</option>
     </select>
   </div>
+  {% if item.description %}
+    <div class="form__field form__field--description">
+      {{_(item.description)}}
+    </div>
+  {% endif %}
 {% endmacro %}
 
 {% macro text_field(item, field) %}
@@ -91,6 +106,11 @@
       {% endif %}
     </div>
   </div>
+  {% if item.description %}
+    <div class="form__field form__field--description">
+      {{_(item.description)}}
+    </div>
+  {% endif %}
 {% endmacro %}
 
 {% macro textarea_field(item, field) %}
@@ -103,6 +123,11 @@
         class="form__field__control"></textarea>
     </div>
   </div>
+  {% if item.description %}
+    <div class="form__field form__field--description">
+      {{_(item.description)}}
+    </div>
+  {% endif %}
 {% endmacro %}
 
 {% macro _label(item, field) %}

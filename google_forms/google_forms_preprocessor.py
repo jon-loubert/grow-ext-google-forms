@@ -9,7 +9,6 @@ import io
 import json
 import os
 import requests
-import urllib
 
 
 TRANSLATABLE_KEYS = (
