@@ -1,4 +1,5 @@
 **.mo
+example/.depcache.json
 example/.podcache.yaml
 example/build/
 example/extensions/
