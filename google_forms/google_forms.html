@@ -60,7 +60,8 @@
       class="form__field__control"
       {% if item.required %}required{% endif %}
       name="{{field.name}}">
-    <option value="">{{_(item.description)}}</option>
+    {# NOTE: Country name should not be translated. #}
+    <option value="">{{item.description}}</option>
     {% for territory in territories|sort(attribute='name') %}
       <option value="{{territory.identifier}}">
         {{territory.name}}
