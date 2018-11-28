@@ -42,11 +42,17 @@ class Field(messages.Message):
     value = messages.StringField(6)
 
 
+class Header(messages.Message):
+    title = messages.StringField(1)
+    body = messages.StringField(2)
+
+
 class Item(messages.Message):
     label = messages.StringField(1)
     description = messages.StringField(2)
     fields = messages.MessageField(Field, 3, repeated=True)
     required = messages.BooleanField(4)
+    header = messages.MessageField(Header, 5)
 
 
 class Form(messages.Message):
@@ -64,12 +70,12 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
     class Config(messages.Message):
         id = messages.StringField(1)
         path = messages.StringField(2)
-	translate = messages.BooleanField(3, default=True)
+        translate = messages.BooleanField(3, default=True)
 
     def run(self, *args, **kwargs):
         url = GoogleFormsPreprocessor.VIEW_URL.format(self.config.id)
         resp = requests.get(url)
-	if resp.status_code != 200:
+        if resp.status_code != 200:
             raise Error('Error requesting -> {}'.format(url))
         html = resp.text
         if SIGN_IN_PAGE_SENTINEL in html:
@@ -81,7 +87,7 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
         form_msg = self.parse_form(soup_content)
         msg_string_content = protojson.encode_message(form_msg)
         json_dict = json.loads(msg_string_content)
-	if self.config.translate:
+        if self.config.translate:
             json_dict = self.tag_keys_for_translation(json_dict)
         self.pod.write_yaml(self.config.path, json_dict)
         self.pod.logger.info('Saved -> {}'.format(self.config.path))
@@ -117,6 +123,18 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
         el = soup.find('div', {'class': 'docssharedWizToggleLabeledPrimaryText'})
         return el.text if el else None
 
+    def get_header(self, soup):
+        header = Header()
+        title = soup.find('div', {'class': 'freebirdFormviewerViewItemsSectionheaderBannerText'})
+        if title:
+            header.title = title.text
+        body = soup.find('div', {'class': 'freebirdFormviewerViewItemsSectionheaderDescriptionText'})
+        if body:
+            header.body = body.text
+        if header.title or header.body:
+            return header
+        return None
+
     def parse_form(self, soup):
         msg = Form()
         msg.title = self.get_text(soup, 'freebirdFormviewerViewHeaderTitle')
@@ -132,6 +150,7 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
             if item_msg.required and item_msg.label.endswith(' *'):
                 item_msg.label = item_msg.label[:-2]
             item_msg.description = self.get_description(item)
+            item_msg.header = self.get_header(item)
             item_msg.fields = []
             checkboxes = item.findAll('div', {'class': 'freebirdFormviewerViewItemsCheckboxChoice'})
             for checkbox in checkboxes:
