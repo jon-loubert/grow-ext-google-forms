@@ -156,7 +156,7 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
             for checkbox in checkboxes:
                 field_msg = Field()
                 field_msg.field_type = FieldType.CHECKBOX
-                field_msg.name = checkbox.parent.find('input').get('name')
+                field_msg.name = checkbox.parent.find_all('input')[-1].get('name')
                 value = self.get_choice_value(checkbox)
                 field_msg.value = value
                 item_msg.fields.append(field_msg)
