@@ -175,7 +175,7 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
                 # Use findAll[-1] to retrieve the last input, which is the
                 # actual one. TODO: Add support for other option response with
                 # element name="entry.588393791.other_option_response".
-                field_msg.name = radio.parent.parent.parent.parent.findAll('input')[-1].get('name')
+                field_msg.name = radio.parent.parent.parent.parent.parent.parent.parent.findAll('input')[-1].get('name')
                 value = self.get_choice_value(radio)
                 field_msg.value = value
                 item_msg.fields.append(field_msg)
