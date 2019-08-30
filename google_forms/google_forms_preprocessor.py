@@ -47,10 +47,15 @@ class Header(messages.Message):
     body = messages.StringField(2)
 
 
+class GridRow(messages.Message):
+    fields = messages.MessageField(Field, 1, repeated=True)
+
+
 class Item(messages.Message):
     label = messages.StringField(1)
     description = messages.StringField(2)
     fields = messages.MessageField(Field, 3, repeated=True)
+    grid = messages.MessageField(GridRow, 6, repeated=True)
     required = messages.BooleanField(4)
     header = messages.MessageField(Header, 5)
 
@@ -152,6 +157,28 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
             item_msg.description = self.get_description(item)
             item_msg.header = self.get_header(item)
             item_msg.fields = []
+
+            grid_rows = item.findAll('div', {'class': 'freebirdFormviewerViewItemsGridRow freebirdFormviewerViewItemsGridUngraded'})
+            if grid_rows:
+                header = item.find('div', {'class': 'freebirdFormviewerViewItemsGridColumnHeader'})
+                input_values = [field.text for field in header.findAll('div', {'class': 'freebirdFormviewerViewItemsGridCell'})]
+                hidden_inputs = item.findAll('input', {'type': 'hidden'})
+                item_msg.grid = []
+                for i, row in enumerate(grid_rows):
+                    grid_row = GridRow()
+                    grid_row.fields = []
+                    title = row.find('div', {'class': 'freebirdFormviewerViewItemsGridRowHeader'})
+                    choices = row.findAll('div', {'class': 'freebirdFormviewerViewItemsGridCell'})
+                    for n, choice in enumerate(choices):
+                        field_msg = Field()
+                        field_msg.field_type = FieldType.RADIO
+                        field_msg.name = hidden_inputs[i].get('name')
+                        field_msg.value = input_values[n]
+                        # Skip empty values.
+                        if field_msg.value:
+                            grid_row.fields.append(field_msg)
+                    item_msg.grid_rows.append(grid_row)
+
             checkboxes = item.findAll('div', {'class': 'freebirdFormviewerViewItemsCheckboxChoice'})
             for checkbox in checkboxes:
                 field_msg = Field()
