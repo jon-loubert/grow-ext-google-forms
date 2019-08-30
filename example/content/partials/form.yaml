@@ -1,29 +1,25 @@
 action: https://docs.google.com/forms/d/e/1FAIpQLSdhq6eKn19c9dpHnCFbUAT1pWsq-erAfw2qPTXgkoQ3qc8vrg/formResponse?hl=en
 description@: 'Event Timing: January 4th-6th, 2016<br/>Event Address: 123 Your Street Your City, ST 12345<br/>Contact us at (123) 456-7890 or <a href="mailto:no_reply@example.com">no_reply@example.com</a>'
 items:
-- description: ''
-  fields:
+- fields:
   - field_type: TEXT
     name: entry.2092238618
     placeholder@: Your answer
   label@: Name
   required: true
-- description: ''
-  fields:
+- fields:
   - field_type: TEXT
     name: entry.1556369182
     placeholder@: Your answer
   label@: Email
   required: true
-- description: ''
-  fields:
+- fields:
   - field_type: TEXT
     name: entry.479301265
     placeholder@: Your answer
   label@: Organization
   required: true
-- description: ''
-  fields:
+- fields:
   - field_type: CHECKBOX
     name: entry.1753222212
     value@: Day 1
@@ -35,8 +31,7 @@ items:
     value@: Day 3
   label@: What days will you attend?
   required: true
-- description: ''
-  fields:
+- fields:
   - field_type: RADIO
     name: entry.588393791
     value@: None
@@ -54,22 +49,19 @@ items:
     value@: Gluten-free
   label@: Dietary restrictions
   required: true
-- description: ''
-  fields:
+- fields:
   - field_type: CHECKBOX
     name: entry.2109138769
     value@: 'Yes'
   label@: I understand that I will have to pay $$ upon arrival
   required: true
-- description: ''
-  fields:
+- fields:
   - field_type: TEXTAREA
     name: entry.819238811
     placeholder@: Your answer
   label@: Write a short bio about yourself
   required: false
-- description: ''
-  fields:
+- fields:
   - field_type: TEXT
     name: entry.2106524609
     placeholder@: Your answer

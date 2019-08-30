@@ -49,6 +49,7 @@ class Header(messages.Message):
 
 class GridRow(messages.Message):
     fields = messages.MessageField(Field, 1, repeated=True)
+    label = messages.StringField(2)
 
 
 class Item(messages.Message):
@@ -165,10 +166,11 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
                 hidden_inputs = item.findAll('input', {'type': 'hidden'})
                 item_msg.grid = []
                 for i, row in enumerate(grid_rows):
+                    label = row.find('div', {'class': 'freebirdFormviewerViewItemsGridRowHeader'})
+                    choices = row.findAll('div', {'class': 'freebirdFormviewerViewItemsGridCell'})
                     grid_row = GridRow()
                     grid_row.fields = []
-                    title = row.find('div', {'class': 'freebirdFormviewerViewItemsGridRowHeader'})
-                    choices = row.findAll('div', {'class': 'freebirdFormviewerViewItemsGridCell'})
+                    grid_row.label = label.text
                     for n, choice in enumerate(choices):
                         field_msg = Field()
                         field_msg.field_type = FieldType.RADIO
@@ -177,7 +179,7 @@ class GoogleFormsPreprocessor(google_drive.BaseGooglePreprocessor):
                         # Skip empty values.
                         if field_msg.value:
                             grid_row.fields.append(field_msg)
-                    item_msg.grid_rows.append(grid_row)
+                    item_msg.grid.append(grid_row)
 
             checkboxes = item.findAll('div', {'class': 'freebirdFormviewerViewItemsCheckboxChoice'})
             for checkbox in checkboxes:
